@@ -31,8 +31,8 @@ class VoMapperTest extends \PHPUnit_Framework_TestCase {
 			$actualFirstNames[] = $personVo->firstName;
 			$actualSexes[] = $personVo->sex;
 		}
-		$this->assertEquals(array('Hannah', 'Uschi'), $actualFirstNames);
-		$this->assertEquals(array(null, 'female'), $actualSexes);
+		$this->assertEquals(array('Hannah', 'Peter', 'Uschi'), $actualFirstNames);
+		$this->assertEquals(array(null, 'male', 'female'), $actualSexes);
 		
 	}
 	public function testScalarMapping()
@@ -52,10 +52,10 @@ class VoMapperTest extends \PHPUnit_Framework_TestCase {
 	}
 	public function testConventionSetter()
 	{
-		$this->assertEquals($expected = 2, Mock\Vo\Person::$setSexCounter);
+		$this->assertEquals($expected = 3, Mock\Vo\Person::$setSexCounter);
 	}
 	public function testConectionAddTo()
 	{
-		$this->assertEquals($expected = 3, Mock\Vo\Person::$addToAddressCounter);
+		$this->assertEquals($expected = 5, Mock\Vo\Person::$addToAddressCounter);
 	}
 }

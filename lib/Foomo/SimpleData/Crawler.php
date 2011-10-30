@@ -67,6 +67,9 @@ class Crawler {
 						case 'json':
 							$sourceType = Validation\Report::SOURCE_TYPE_JSON;
 							$content = json_decode(file_get_contents($fileInfo->getPathname()), true);
+							if(is_null($content)) {
+								trigger_error('i guess either parsing went wrong or this file should not be here ' . substr($fileInfo->getPathname(), strlen($this->root)) , E_USER_ERROR);
+							}
 							break;
 						default:
 							// that is a file

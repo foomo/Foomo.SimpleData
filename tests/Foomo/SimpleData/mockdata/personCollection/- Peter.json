@@ -1,0 +1,18 @@
+{
+	"firstName": "Peter",
+	"lastName": "Testa",
+	"sex": "male",
+	"birthday": 12345678,
+	"addresses": [
+		{
+			"city": "Hamburg",
+			"street": "Strasse am Ufer 15",
+			"zip": "20001"
+		},
+		{
+			"city": "München",
+			"street": "Allee 12a",
+			"zip": "80000"
+		}
+	]
+}
