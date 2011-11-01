@@ -37,10 +37,18 @@ class VoMapper {
 				if(!is_null($type)) {
 					// ? crawl it
 					if($propType->isArrayOf) {
-						foreach($data[$name] as $childData) {
+						$expectedKey = 0;
+						foreach($data[$name] as $key => $childData) {
 							$childVo = new $type;
 							self::map($childData, $childVo);
-							self::addToPropertyArray($voTarget, $name, $childVo);
+							if($expectedKey === $key) {
+								// regular array
+								self::addToPropertyArray($voTarget, $name, $childVo);
+							} else {
+								// that is a fckn hash
+								self::assignProperty($voTarget->$name, $key, $childVo);
+							}
+							$expectedKey ++;
 						}
 					} else {
 						self::map($data[$name], $childVo = new $type);
@@ -104,13 +112,19 @@ class VoMapper {
 	 * @param string $propName
 	 * @param mixed $value 
 	 */
-	private static function assignProperty($vo, $propName, $value)
+	private static function assignProperty(&$vo, $propName, $value)
 	{
 		$setterFunc = array($vo, 'set' . ucfirst($propName));
 		if(is_callable($setterFunc)) {
 			call_user_func_array($setterFunc, array($value));
 		} else {
-			$vo->$propName = $value;
+			if(is_object($vo)) {
+				$vo->$propName = $value;
+			} elseif(is_array($vo)) {
+				$vo[$propName] = $value;
+			} else {
+				trigger_error('now what kinda vo is that supposed to be', E_USER_ERROR);
+			}
 		}
 	}
 	/**
