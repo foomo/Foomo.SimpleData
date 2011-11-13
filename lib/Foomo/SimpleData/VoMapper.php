@@ -56,7 +56,7 @@ class VoMapper {
 					}
 				} else {
 					// : assign it
-					self::assignProperty($voTarget, $name, self::castScalarType($propType->type, $data[$name]));
+					self::assignProperty($voTarget, $name, $data[$name], $propType->type);
 				}
 			}
 		}
@@ -112,12 +112,15 @@ class VoMapper {
 	 * @param string $propName
 	 * @param mixed $value 
 	 */
-	private static function assignProperty(&$vo, $propName, $value)
+	private static function assignProperty(&$vo, $propName, $value, $type = null)
 	{
 		$setterFunc = array($vo, 'set' . ucfirst($propName));
 		if(is_callable($setterFunc)) {
 			call_user_func_array($setterFunc, array($value));
 		} else {
+			if(!is_null($type)) {
+				$value = self::castScalarType($type, $value);
+			}
 			if(is_object($vo)) {
 				$vo->$propName = $value;
 			} elseif(is_array($vo)) {

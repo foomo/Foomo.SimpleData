@@ -18,6 +18,12 @@
 		</li>
 	<? endforeach; ?>
 </ul>
+<h2>Invalid files</h2>
+<ul>
+	<? foreach($model->crawlerResult->invalidFiles as $invalidFile): ?>
+		<li><?= $view->escape($invalidFile) ?></li>
+	<? endforeach; ?>
+</ul>
 <h2>Validation</h2>
 <ul>
 	<? foreach($model->crawlerResult->validationReports as $validationReport): ?>

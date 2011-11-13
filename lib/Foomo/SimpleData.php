@@ -11,6 +11,7 @@ class SimpleData {
 		$result = new SimpleData\CrawlerResult;
 		$result->data = $crawler->result;
 		$result->validationReports = $crawler->validationReports;
+		$result->invalidFiles = $crawler->invalidFiles;
 		return $result;
 	}
 }
