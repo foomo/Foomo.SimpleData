@@ -11,6 +11,8 @@ class VoMapper {
 	 * 
 	 * @param array $data
 	 * @param mixed $voTarget
+	 * 
+	 * @return mixed the passed in vo target - for your comfort
 	 */
 	public static function map(array $data, $voTarget)
 	{
@@ -60,6 +62,7 @@ class VoMapper {
 				}
 			}
 		}
+		return $voTarget;
 	}
 	private static function castScalarType($type, $value)
 	{

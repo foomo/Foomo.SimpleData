@@ -28,79 +28,81 @@ class Crawler {
 			$this->result = array();
 			$data = &$this->result;
 		}
-		$iterator = new \DirectoryIterator($folder);
+		if(file_exists($folder) && is_dir($folder)) {
+			$iterator = new \DirectoryIterator($folder);
 
-		$infos = array();
-		
-		// stupid sorting
-		
-		/* @var $fileInfo \SplFileInfo */
-		foreach($iterator as $fileInfo) {
-			if(substr($fileInfo->getFilename(),0,1) != '.') {
-				$infos[$fileInfo->getFilename()] = $fileInfo->getPathname();
-			}
-		}
-		
-		$keys = array_keys($infos);
-		sort($keys);
-		
-		foreach($keys as $fileInfoKey) {
-			$fileInfo = new \SplFileInfo($infos[$fileInfoKey]);
-			if($fileInfo->isDir() && is_string($fileInfo->getPathname())) {
-				$newData = array();
-				self::crawl($fileInfo->getPathname(), $newData);
-				if(substr($fileInfo->getFilename(), 0, 1) == '-') {
-					$data[] = $newData;
-				} else {
-					$data[$fileInfo->getFilename()] = $newData;
+			$infos = array();
+
+			// stupid sorting
+
+			/* @var $fileInfo \SplFileInfo */
+			foreach($iterator as $fileInfo) {
+				if(substr($fileInfo->getFilename(),0,1) != '.') {
+					$infos[$fileInfo->getFilename()] = $fileInfo->getPathname();
 				}
-			} else if($fileInfo->isFile()) {
-				$suffix = self::getSuffix($fileInfo->getFilename());
-				if(!is_null($suffix)) {
-					$key = substr($fileInfo->getFilename(), 0, - (strlen($suffix) +  1));
-					$content = null;
-					switch ($suffix) {
-						case 'yml':
-						case 'yaml':
-							$sourceType = Validation\Report::SOURCE_TYPE_YAML;
-							$content = \Foomo\Yaml::parse(file_get_contents($fileInfo->getPathname()));
-							break;
-						case 'json':
-							$sourceType = Validation\Report::SOURCE_TYPE_JSON;
-							$content = json_decode(file_get_contents($fileInfo->getPathname()), true);
-							if(is_null($content)) {
-								$this->invalidFiles[] = $fileInfo->getPathname();
-								// throw new \Foomo\Services\Types\Exception('i guess either parsing went wrong or this file should not be here ' . substr($fileInfo->getPathname(), strlen($this->root)) , E_USER_ERROR);
-							}
-							break;
-						default:
-							// that is a file
-							$sourceType = Validation\Report::SOURCE_TYPE_FILE;
-							$content = $fileInfo->getPathname();
+			}
+
+			$keys = array_keys($infos);
+			sort($keys);
+
+			foreach($keys as $fileInfoKey) {
+				$fileInfo = new \SplFileInfo($infos[$fileInfoKey]);
+				if($fileInfo->isDir() && is_string($fileInfo->getPathname())) {
+					$newData = array();
+					self::crawl($fileInfo->getPathname(), $newData);
+					if(substr($fileInfo->getFilename(), 0, 1) == '-') {
+						$data[] = $newData;
+					} else {
+						$data[$fileInfo->getFilename()] = $newData;
 					}
-					if(!is_null($key)) {
-						// run validation
-						/* @var $validator Validation\AbstractValidator */
-						foreach($this->validators as $validator) {
-							$report = $validator->validatePath(
-								$this->getRelativePath(
-									$this->root,
-									$fileInfo->getPathname()
-								), 
-								$content
-							);
-							if($report) {
-								$report->className = get_class($validator);
-								$report->sourceType = $sourceType;
-								$report->sourceData = file_get_contents($fileInfo->getPathname());
-								$report->parsedData = $content;
-								$this->validationReports[] = $report;
-							}
+				} else if($fileInfo->isFile()) {
+					$suffix = self::getSuffix($fileInfo->getFilename());
+					if(!is_null($suffix)) {
+						$key = substr($fileInfo->getFilename(), 0, - (strlen($suffix) +  1));
+						$content = null;
+						switch ($suffix) {
+							case 'yml':
+							case 'yaml':
+								$sourceType = Validation\Report::SOURCE_TYPE_YAML;
+								$content = \Foomo\Yaml::parse(file_get_contents($fileInfo->getPathname()));
+								break;
+							case 'json':
+								$sourceType = Validation\Report::SOURCE_TYPE_JSON;
+								$content = json_decode(file_get_contents($fileInfo->getPathname()), true);
+								if(is_null($content)) {
+									$this->invalidFiles[] = $fileInfo->getPathname();
+									// throw new \Foomo\Services\Types\Exception('i guess either parsing went wrong or this file should not be here ' . substr($fileInfo->getPathname(), strlen($this->root)) , E_USER_ERROR);
+								}
+								break;
+							default:
+								// that is a file
+								$sourceType = Validation\Report::SOURCE_TYPE_FILE;
+								$content = $fileInfo->getPathname();
 						}
-						if(substr($key, 0, 1) == '-') {
-							$data[] = $content;
-						} else {
-							$data[$key] = $content;
+						if(!is_null($key)) {
+							// run validation
+							/* @var $validator Validation\AbstractValidator */
+							foreach($this->validators as $validator) {
+								$report = $validator->validatePath(
+									$this->getRelativePath(
+										$this->root,
+										$fileInfo->getPathname()
+									), 
+									$content
+								);
+								if($report) {
+									$report->className = get_class($validator);
+									$report->sourceType = $sourceType;
+									$report->sourceData = file_get_contents($fileInfo->getPathname());
+									$report->parsedData = $content;
+									$this->validationReports[] = $report;
+								}
+							}
+							if(substr($key, 0, 1) == '-') {
+								$data[] = $content;
+							} else {
+								$data[$key] = $content;
+							}
 						}
 					}
 				}
