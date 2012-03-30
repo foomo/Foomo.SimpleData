@@ -56,6 +56,7 @@ class VoMapperTest extends \PHPUnit_Framework_TestCase {
 	}
 	public function testConectionAddTo()
 	{
+		//@todo add a test for anonymous arrays
 		$this->assertEquals($expected = 5, Mock\Vo\Person::$addToAddressCounter);
 	}
 }

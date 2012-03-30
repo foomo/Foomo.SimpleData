@@ -39,6 +39,7 @@ class VoMapper {
 				if(!is_null($type)) {
 					// ? crawl it
 					if($propType->isArrayOf) {
+						// typed array
 						$expectedKey = 0;
 						foreach($data[$name] as $key => $childData) {
 							$childVo = new $type;
@@ -58,7 +59,22 @@ class VoMapper {
 					}
 				} else {
 					// : assign it
-					self::assignProperty($voTarget, $name, $data[$name], $propType->type);
+					if(is_array($voTarget->$name)) {
+						// not typed array
+						$expectedKey = 0;
+						foreach($data[$name] as $key => $childData) {
+							if($expectedKey === $key) {
+								// regular array
+								self::addToPropertyArray($voTarget, $name, $childData);
+							} else {
+								// that is a fckn hash
+								self::assignProperty($voTarget->$name, $key, $childData);
+							}
+							$expectedKey ++;
+						}
+					} else {
+						self::assignProperty($voTarget, $name, $data[$name], $propType->type);
+					}
 				}
 			}
 		}
