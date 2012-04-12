@@ -59,22 +59,7 @@ class VoMapper {
 					}
 				} else {
 					// : assign it
-					if(is_array($voTarget->$name)) {
-						// not typed array
-						$expectedKey = 0;
-						foreach($data[$name] as $key => $childData) {
-							if($expectedKey === $key) {
-								// regular array
-								self::addToPropertyArray($voTarget, $name, $childData);
-							} else {
-								// that is a fckn hash
-								self::assignProperty($voTarget->$name, $key, $childData);
-							}
-							$expectedKey ++;
-						}
-					} else {
-						self::assignProperty($voTarget, $name, $data[$name], $propType->type);
-					}
+					self::assignProperty($voTarget, $name, $data[$name], $propType->type);
 				}
 			}
 		}
