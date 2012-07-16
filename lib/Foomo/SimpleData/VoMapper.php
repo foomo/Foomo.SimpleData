@@ -39,6 +39,7 @@ class VoMapper {
 				if(!is_null($type)) {
 					// ? crawl it
 					if($propType->isArrayOf) {
+						// typed array
 						$expectedKey = 0;
 						foreach($data[$name] as $key => $childData) {
 							$childVo = new $type;
