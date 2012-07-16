@@ -42,15 +42,17 @@ class VoMapper {
 						$expectedKey = 0;
 						foreach($data[$name] as $key => $childData) {
 							$childVo = new $type;
-							self::map($childData, $childVo);
-							if($expectedKey === $key) {
-								// regular array
-								self::addToPropertyArray($voTarget, $name, $childVo);
-							} else {
-								// that is a fckn hash
-								self::assignProperty($voTarget->$name, $key, $childVo);
+							if(is_array($childData)) {
+								self::map($childData, $childVo);
+								if($expectedKey === $key) {
+									// regular array
+									self::addToPropertyArray($voTarget, $name, $childVo);
+								} else {
+									// that is a fckn hash
+									self::assignProperty($voTarget->$name, $key, $childVo);
+								}
+								$expectedKey ++;
 							}
-							$expectedKey ++;
 						}
 					} else {
 						self::map($data[$name], $childVo = new $type);
