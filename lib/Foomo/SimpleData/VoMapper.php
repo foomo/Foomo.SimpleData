@@ -16,6 +16,7 @@ class VoMapper {
 	 */
 	public static function map(array $data, $voTarget)
 	{
+		$targetClass = get_class($voTarget);
 		// is "this" set?
 		if(isset($data['this'])) {
 			// the conventions is to elevate the content of "this" to root
@@ -25,10 +26,11 @@ class VoMapper {
 			// clean it up
 			unset($data['this']);
 		}
+		
 		$objectNamespace = self::getObjectNamespace($voTarget);
 		// map to vo
-		$refl = new \Foomo\Services\Reflection\ServiceObjectType(get_class($voTarget));
-		/* @var $propType \Foomo\Services\Reflection\ServiceObjectType */
+		//$refl = new \Foomo\Services\Reflection\ServiceObjectType(get_class($voTarget));
+		$refl = \Foomo\Services\Reflection\ServiceObjectType::getCachedType($targetClass);
 		// iterate on what is expected not necessarily on what is there
 		foreach($refl->props as $name => $propType) {
 			// add element
@@ -160,15 +162,20 @@ class VoMapper {
 	 */
 	private static function getTypeInNamespace($type, $namespace)
 	{
-		if(class_exists($namespace . '\\' . $type)) {
-			// look in the NS first
-			return $namespace . '\\' . $type;
-		} else if(class_exists($type)) {
-			// global
-			return $type;
-		} else {
-			// that has to be sth. scalar
-			return null;
+		static $cache = array();
+		$key = $namespace . '-' . $type;
+		if(!isset($cache[$key])) {
+			if(class_exists($namespace . '\\' . $type)) {
+				// look in the NS first
+				$cache[$key] = $namespace . '\\' . $type;
+			} else if(class_exists($type)) {
+				// global
+				$cache[$key] = $type;
+			} else {
+				// that has to be sth. scalar
+				$cache[$key] = false;
+			}
 		}
+		return $cache[$key]===false?null:$cache[$key];
 	}
 }
