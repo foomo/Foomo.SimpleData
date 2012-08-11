@@ -11,7 +11,7 @@ class DomainConfig extends \Foomo\Config\AbstractConfig {
 	 */
 	public $rootFolder;
 	/**
-	 * array(array('class' => 'ClassName\Of\Validator', 'expr' => array('regex', 'regex', ...)))
+	 * array(array('class' => 'ClassName\Of\Validator', 'regex' => array('regex', 'regex', ...)))
 	 * 
 	 * @var array
 	 */

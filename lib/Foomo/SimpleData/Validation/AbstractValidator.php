@@ -19,7 +19,7 @@ abstract class AbstractValidator {
 			}
 		}
 	}
-	private function pathMatches($rule, $path)
+	protected function pathMatches($rule, $path)
 	{
 		if(preg_match($rule, $path)) {
 			return true;

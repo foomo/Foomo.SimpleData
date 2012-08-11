@@ -52,6 +52,8 @@
 				<?= $view->partial('geshi', array('lang' => $lang, 'source' => $validationReport->sourceData)) ?>
 				<p>Interpretation</p>
 				<?= $view->partial('data', array('data' => $validationReport->parsedData)) ?>
+			<? elseif($validationReport->sourceType == Foomo\SimpleData\Validation\Report::SOURCE_TYPE_DIR): ?>
+				<?= $view->partial('data', array('data' => $validationReport->parsedData)) ?>				
 			<? endif; ?>
 		</li>
 	<? endforeach; ?>

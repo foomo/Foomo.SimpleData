@@ -25,6 +25,7 @@ class Report {
 	public $report;
 	const SOURCE_TYPE_YAML = 'YAML';
 	const SOURCE_TYPE_JSON = 'JSON';
+	const SOURCE_TYPE_DIR = 'DIR';
 	const SOURCE_TYPE_FILE = 'FILE';
 	/**
 	 *

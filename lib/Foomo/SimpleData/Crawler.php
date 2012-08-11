@@ -19,6 +19,25 @@ class Crawler {
 		$this->validators = $validators;
 		$this->validationReports = array();
 	}
+	private function validate(\SplFileInfo $fileInfo, $content, $sourceType)
+	{
+		foreach($this->validators as $validator) {
+			$report = $validator->validatePath(
+				$this->getRelativePath(
+					$this->root,
+					$fileInfo->getPathname()
+				), 
+				$content
+			);
+			if($report) {
+				$report->className = get_class($validator);
+				$report->sourceType = $sourceType;
+				$report->sourceData = file_get_contents($fileInfo->getPathname());
+				$report->parsedData = $content;
+				$this->validationReports[] = $report;
+			}
+		}
+	}
 	public function crawl($folder = null, array &$data = null)
 	{
 		if(is_null($folder)) {
@@ -49,12 +68,14 @@ class Crawler {
 				$fileInfo = new \SplFileInfo($infos[$fileInfoKey]);
 				if($fileInfo->isDir() && is_string($fileInfo->getPathname())) {
 					$newData = array();
-					self::crawl($fileInfo->getPathname(), $newData);
+					$this->crawl($fileInfo->getPathname(), $newData);
+					$this->validate($fileInfo, $newData, Validation\Report::SOURCE_TYPE_DIR);
 					if(substr($fileInfo->getFilename(), 0, 1) == '-') {
 						$data[] = $newData;
 					} else {
 						$data[$fileInfo->getFilename()] = $newData;
 					}
+
 				} else if($fileInfo->isFile()) {
 					$suffix = self::getSuffix($fileInfo->getFilename());
 					if(!is_null($suffix)) {
@@ -79,25 +100,10 @@ class Crawler {
 								$sourceType = Validation\Report::SOURCE_TYPE_FILE;
 								$content = $fileInfo->getPathname();
 						}
+						$this->validate($fileInfo, $content, $sourceType);
 						if(!is_null($key)) {
 							// run validation
 							/* @var $validator Validation\AbstractValidator */
-							foreach($this->validators as $validator) {
-								$report = $validator->validatePath(
-									$this->getRelativePath(
-										$this->root,
-										$fileInfo->getPathname()
-									), 
-									$content
-								);
-								if($report) {
-									$report->className = get_class($validator);
-									$report->sourceType = $sourceType;
-									$report->sourceData = file_get_contents($fileInfo->getPathname());
-									$report->parsedData = $content;
-									$this->validationReports[] = $report;
-								}
-							}
 							if(substr($key, 0, 1) == '-') {
 								$data[] = $content;
 							} else {
