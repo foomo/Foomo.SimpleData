@@ -9,13 +9,16 @@ class VoMapper {
 	/**
 	 * recursively map data to a value object
 	 * 
-	 * @param array $data
+	 * @param mixed $data
 	 * @param mixed $voTarget
 	 * 
 	 * @return mixed the passed in vo target - for your comfort
 	 */
-	public static function map(array $data, $voTarget)
+	public static function map($data, $voTarget)
 	{
+		if(is_object($data)) {
+			$data = (array) $data;
+		}
 		$targetClass = get_class($voTarget);
 		// is "this" set?
 		if(isset($data['this'])) {
