@@ -15,7 +15,7 @@ class Crawler {
 	public $result;
 	public function __construct($root, array $validators = array())
 	{
-		$this->root = $root;
+		$this->root = realpath($root);
 		$this->validators = $validators;
 		$this->validationReports = array();
 	}
@@ -43,6 +43,7 @@ class Crawler {
 		if(is_null($folder)) {
 			$folder = $this->root;
 		}
+		$folder = realpath($folder);
 		if(is_null($data)) {
 			$this->result = array();
 			$data = &$this->result;
