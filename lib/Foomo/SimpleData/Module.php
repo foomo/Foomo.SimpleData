@@ -64,6 +64,8 @@ class Module extends \Foomo\Modules\ModuleBase
 	public static function getResources()
 	{
 		return array(
+			\Foomo\Modules\Resource\Module::getResource('Foomo', self::VERSION),
+			\Foomo\Modules\Resource\Module::getResource('Foomo.Services', self::VERSION)
 			// get a run mode independent folder var/<runMode>/test
 			// \Foomo\Modules\Resource\Fs::getVarResource(\Foomo\Modules\Resource\Fs::TYPE_FOLDER, 'test'),
 			// and a file in it
