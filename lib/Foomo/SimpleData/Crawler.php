@@ -2,6 +2,9 @@
 
 namespace Foomo\SimpleData;
 
+use Foomo\SimpleData\Validation\AbstractValidator;
+use Foomo\SimpleData\Validation\Report;
+
 class Crawler {
 	private $root;
 	private $validators = array();
@@ -22,6 +25,7 @@ class Crawler {
 	private function validate(\SplFileInfo $fileInfo, $content, $sourceType)
 	{
 		foreach($this->validators as $validator) {
+			/* @var $validator AbstractValidator */
 			$report = $validator->validatePath(
 				$this->getRelativePath(
 					$this->root,
@@ -32,7 +36,9 @@ class Crawler {
 			if($report) {
 				$report->className = get_class($validator);
 				$report->sourceType = $sourceType;
-				$report->sourceData = file_get_contents($fileInfo->getPathname());
+				if(in_array($sourceType, array(Report::SOURCE_TYPE_JSON, Report::SOURCE_TYPE_YAML)) ) {
+					$report->sourceData = file_get_contents($fileInfo->getPathname());
+				}
 				$report->parsedData = $content;
 				$this->validationReports[] = $report;
 			}
