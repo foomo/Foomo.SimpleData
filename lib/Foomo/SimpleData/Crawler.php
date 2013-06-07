@@ -16,11 +16,14 @@ class Crawler {
 	 * @var array
 	 */
 	public $result;
-	public function __construct($root, array $validators = array())
+	public $maxDepth;
+	private $currentDepth;
+	public function __construct($root, array $validators = array(), $maxDepth = 0)
 	{
 		$this->root = realpath($root);
 		$this->validators = $validators;
 		$this->validationReports = array();
+		$this->maxDepth = $maxDepth;
 	}
 	private function validate(\SplFileInfo $fileInfo, $content, $sourceType)
 	{
@@ -47,7 +50,17 @@ class Crawler {
 	public function crawl($folder = null, array &$data = null)
 	{
 		if(is_null($folder)) {
+			if($this->maxDepth > 0) {
+				$this->currentDepth = 0;
+			}
 			$folder = $this->root;
+		}
+		if(isset($this->currentDepth)) {
+			if($this->currentDepth > $this->maxDepth) {
+				return;
+			} else {
+				$this->currentDepth ++;
+			}
 		}
 		$folder = realpath($folder);
 		if(is_null($data)) {
@@ -120,6 +133,9 @@ class Crawler {
 					}
 				}
 			}
+		}
+		if(isset($this->currentDepth)) {
+			$this->currentDepth --;
 		}
 	}
 	private static function getRelativePath($root, $path)
