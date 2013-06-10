@@ -7,10 +7,16 @@ namespace Foomo\SimpleData\Mock\Vo;
 class Person {
 	public static $addToAddressCounter = 0;
 	public static $setSexCounter = 0;
+	public static $addToPhonesCounterObj = 0;
+	public static $addToPhonesCounterString = 0;
 	/**
 	 * @var Address[]
 	 */
 	public $addresses = array();
+	/**
+	 * @var Phone[]
+	 */
+	public $phones = array();
 	/**
 	 * @var string
 	 */
@@ -39,6 +45,14 @@ class Person {
 		self::$setSexCounter ++;
 		if(in_array($sex, array('male', 'female'))) {
 			$this->sex = $sex;
+		}
+	}
+	public function addToPhones($key, $value)
+	{
+		if(is_object($value)) {
+			self::$addToPhonesCounterObj ++;
+		} else if(is_string($value)) {
+			self::$addToPhonesCounterString ++;
 		}
 	}
 	

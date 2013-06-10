@@ -50,15 +50,18 @@ class VoMapper {
 							$childVo = new $type;
 							if(is_array($childData)) {
 								self::map($childData, $childVo);
-								if($expectedKey === $key) {
-									// regular array
-									self::addToPropertyArray($voTarget, $name, $childVo);
-								} else {
-									// that is a fckn hash
-									self::assignProperty($voTarget->$name, $key, $childVo);
-								}
-								$expectedKey ++;
+							} else {
+								// not mappable
+								$childVo = $childData;
 							}
+							if($expectedKey === $key) {
+								// regular array
+								self::addToPropertyArray($voTarget, $name, $childVo);
+							} else {
+								// that is a fckn hash
+								self::addToPropertyHash($voTarget, $name, $key, $childVo);
+							}
+							$expectedKey ++;
 						}
 					} else {
 						self::map($data[$name], $childVo = new $type);
@@ -114,6 +117,23 @@ class VoMapper {
 			array_push($vo->$propName, $value);
 		}
 		
+	}
+
+	/**
+	 * @param $vo
+	 * @param $propName
+	 * @param $key
+	 *
+	 * @param $value
+	 */
+	private static function addToPropertyHash($vo, $propName, $key, $value)
+	{
+		$adderFunc = array($vo, 'addTo' . ucfirst($propName));
+		if(is_callable($adderFunc)) {
+			call_user_func_array($adderFunc, array($key, $value));
+		} else {
+			$vo->{$propName}[$key] = $value;
+		}
 	}
 	/**
 	 * assign a property - will check if a set<PropName>($value) method exists

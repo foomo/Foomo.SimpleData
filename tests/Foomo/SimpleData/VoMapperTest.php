@@ -54,9 +54,13 @@ class VoMapperTest extends \PHPUnit_Framework_TestCase {
 	{
 		$this->assertEquals($expected = 3, Mock\Vo\Person::$setSexCounter);
 	}
-	public function testConectionAddTo()
+	public function testConventionAddTo()
 	{
-		//@todo add a test for anonymous arrays
 		$this->assertEquals($expected = 5, Mock\Vo\Person::$addToAddressCounter);
+	}
+	public function testConventionAddToHash()
+	{
+		$this->assertEquals($expected = 2, Mock\Vo\Person::$addToPhonesCounterObj);
+		$this->assertEquals($expected = 1, Mock\Vo\Person::$addToPhonesCounterString);
 	}
 }

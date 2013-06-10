@@ -14,5 +14,16 @@
 			"street": "Allee 12a",
 			"zip": "80000"
 		}
-	]
+	],
+	"phones": {
+		"home" : {
+			"type" : "home",
+			"number" : "1234"
+		},
+		"mobile" : {
+			"type" : "mobile",
+			"number" : "54321"
+		},
+		"test" : "1234"
+	}
 }
