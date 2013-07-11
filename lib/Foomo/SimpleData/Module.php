@@ -28,7 +28,7 @@ class Module extends \Foomo\Modules\ModuleBase
 	//---------------------------------------------------------------------------------------------
 	// ~ Constants
 	//---------------------------------------------------------------------------------------------
-
+	const VERSION = '0.3.0';
 	/**
 	 * the name of this module
 	 *
@@ -59,21 +59,12 @@ class Module extends \Foomo\Modules\ModuleBase
 	/**
 	 * get all the module resources
 	 *
-	 * @return Foomo\Modules\Resource[]
+	 * @return \Foomo\Modules\Resource[]
 	 */
 	public static function getResources()
 	{
 		return array(
-			\Foomo\Modules\Resource\Module::getResource('Foomo', self::VERSION),
-			\Foomo\Modules\Resource\Module::getResource('Foomo.Services', self::VERSION)
-			// get a run mode independent folder var/<runMode>/test
-			// \Foomo\Modules\Resource\Fs::getVarResource(\Foomo\Modules\Resource\Fs::TYPE_FOLDER, 'test'),
-			// and a file in it
-			// \Foomo\Modules\Resource\Fs::getVarResource(\Foomo\Modules\Resource\Fs::TYPE_File, 'test' . DIRECTORY_SEPARATOR . 'someFile'),
-			// request a cache resource
-			// \Foomo\Modules\Resource\Fs::getCacheResource(\Foomo\Modules\Resource\Fs::TYPE_FOLDER, 'navigationLeaves'),
-			// a database configuration
-			// \Foomo\Modules\Resource\Config::getResource('yourModule', 'db')
+			\Foomo\Modules\Resource\Module::getResource('Foomo.Services', '0.3.*')
 		);
 	}
 }
