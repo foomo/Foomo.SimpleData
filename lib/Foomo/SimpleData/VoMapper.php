@@ -48,7 +48,7 @@ class VoMapper {
 						$expectedKey = 0;
 						foreach($data[$name] as $key => $childData) {
 							$childVo = new $type;
-							if(is_array($childData)) {
+							if(is_array($childData) || is_object($childData)) {
 								self::map($childData, $childVo);
 							} else {
 								// not mappable
