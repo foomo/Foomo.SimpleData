@@ -3,7 +3,6 @@
 namespace Foomo\SimpleData;
 
 class VoMapperTest extends \PHPUnit_Framework_TestCase {
-	private $data;
 	private $voArray;
 	public function setUp()
 	{
@@ -19,7 +18,6 @@ class VoMapperTest extends \PHPUnit_Framework_TestCase {
 				VoMapper::map($dataArray, $personVo);
 			}
 		}
-		$this->data = $data;
 		$this->voArray = $voArray;
 	}
 	public function testBaseMapping()
