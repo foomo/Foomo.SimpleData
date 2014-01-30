@@ -105,7 +105,12 @@ class Crawler {
 							case 'yml':
 							case 'yaml':
 								$sourceType = Validation\Report::SOURCE_TYPE_YAML;
-								$content = \Foomo\Yaml::parse(file_get_contents($fileInfo->getPathname()));
+								try {
+									$content = \Foomo\Yaml::parse(file_get_contents($fileInfo->getPathname()));
+								} catch(\Exception $e) {
+									$content = null;
+									$this->invalidFiles[] = $fileInfo->getPathname();
+								}
 								break;
 							case 'json':
 								$sourceType = Validation\Report::SOURCE_TYPE_JSON;
