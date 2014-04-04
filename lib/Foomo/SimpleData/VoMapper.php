@@ -64,8 +64,12 @@ class VoMapper {
 							$expectedKey ++;
 						}
 					} else {
-						self::map($data[$name], $childVo = new $type);
-						self::assignProperty($voTarget, $name, $childVo);
+						if(is_scalar($data[$name])) {
+							self::assignProperty($voTarget, $name, $data[$name]);
+						} else {
+							self::map($data[$name], $childVo = new $type);
+							self::assignProperty($voTarget, $name, $childVo);
+						}
 					}
 				} else {
 					// : assign it
