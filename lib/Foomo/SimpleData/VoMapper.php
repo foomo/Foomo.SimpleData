@@ -115,12 +115,15 @@ class VoMapper {
 	private static function addToPropertyArray($vo, $propName, $value)
 	{
 		$adderFunc = array($vo, 'addTo' . ucfirst($propName));
-		if(is_callable($adderFunc)) {
+		if (is_callable($adderFunc)) {
 			call_user_func_array($adderFunc, array($value));
-		} else {
+		} else if (is_array($vo->$propName)) {
 			array_push($vo->$propName, $value);
+		} else if (is_null($vo->$propName)) {
+			$vo->$propName = array($value);
+		} else {
+			trigger_error('can not add to property array, it\'s type is ' . gettype($vo->$propName), E_USER_WARNING);
 		}
-		
 	}
 
 	/**
@@ -145,7 +148,8 @@ class VoMapper {
 	 * 
 	 * @param stdClass $vo a value object
 	 * @param string $propName
-	 * @param mixed $value 
+	 * @param mixed $value
+	 * @param string $type
 	 */
 	private static function assignProperty(&$vo, $propName, $value, $type = null)
 	{

@@ -61,4 +61,42 @@ class VoMapperTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected = 2, Mock\Vo\Person::$addToPhonesCounterObj);
 		$this->assertEquals($expected = 1, Mock\Vo\Person::$addToPhonesCounterString);
 	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error_Warning
+	 */
+	public function testArrayMappingToArrayOfWrongType()
+	{
+		$persons = \Foomo\SimpleData::read(implode( DIRECTORY_SEPARATOR, array( __DIR__, 'mockData', 'personCollection' )))->data;
+		foreach($persons as $personArray) {
+			$personVo = new Mock\Vo\Person();
+			$personVo->addresses = 1;
+			VoMapper::map($personArray, $personVo);
+		}
+	}
+	/**
+	 * @expectedException PHPUnit_Framework_Error
+	 */
+	public function testArrayMappingToArrayOfWrongTypeNoAdderMethod()
+	{
+		$persons = \Foomo\SimpleData::read(implode( DIRECTORY_SEPARATOR, array( __DIR__, 'mockData', 'personCollection' )))->data;
+		foreach($persons as $personArray) {
+			$personVo = new Mock\Vo\Person();
+			$personVo->emails = 'wrong type';
+			VoMapper::map($personArray, $personVo);
+		}
+	}
+	public function testArrayMappingToNullArray()
+	{
+		$persons = \Foomo\SimpleData::read(implode( DIRECTORY_SEPARATOR, array( __DIR__, 'mockData', 'personCollection' )))->data;
+		foreach($persons as $personArray) {
+			$personVo = new Mock\Vo\Person();
+			$personVo->addresses = null;
+			VoMapper::map($personArray, $personVo);
+			if(!empty($personArray['addresses'])) {
+				$this->assertTrue(is_array($personVo->addresses), 'i expected addresses to be an array but got ' . gettype($personVo->addresses));
+			}
+		}
+	}
+
 }

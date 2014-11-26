@@ -18,6 +18,11 @@ class Person {
 	 */
 	public $phones = array();
 	/**
+	 * no adder method for this property to test VoMapper's addToPropertyArray method a different way
+	 * @var Email[]
+	 */
+	public $emails = array();
+	/**
 	 * @var string
 	 */
 	public $sex;

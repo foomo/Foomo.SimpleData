@@ -1,0 +1,7 @@
+0:
+  type: home
+  displayName: Hannah
+  address: email1@provider.com
+1:
+  type: test
+  address: email2@test.com
